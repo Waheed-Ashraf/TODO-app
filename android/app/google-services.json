@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "267426467053",
+    "project_id": "kanban-board-a6945",
+    "storage_bucket": "kanban-board-a6945.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267426467053:android:a71604c4fe88620df350e4",
+        "android_client_info": {
+          "package_name": "com.example.todo_app_task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASNz8SaptAlm-THRLVd1tVZOPOcqyD4t8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
