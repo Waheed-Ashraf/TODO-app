@@ -219,14 +219,12 @@ class Lane extends StatelessWidget {
       onLeave: (_) => onHover(false),
       onAcceptWithDetails: (details) {
         onHover(false);
-        onAcceptTask(
-          details.data,
-          column,
-        ); // details.data is DraggedPayloadModel
+        onAcceptTask(details.data, column);
       },
       builder: (context, candidateData, rejectedData) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 150),
+          height: MediaQuery.sizeOf(context).height,
           decoration: BoxDecoration(
             color: hovering ? Colors.white10 : Colors.transparent,
             border: Border.all(
@@ -237,19 +235,21 @@ class Lane extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           padding: const EdgeInsets.all(6),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SectionHeader(title: title, backgroundColor: color),
-              const SizedBox(height: 8),
-              ..._buildCardsWithDropGaps(context),
-              GapTarget(
-                column: column,
-                index: tasks.length,
-                onAcceptTask: onAcceptTask,
-                color: color,
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SectionHeader(title: title, backgroundColor: color),
+                const SizedBox(height: 8),
+                ..._buildCardsWithDropGaps(context),
+                GapTarget(
+                  column: column,
+                  index: tasks.length,
+                  onAcceptTask: onAcceptTask,
+                  color: color,
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -304,10 +304,17 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
+          const Icon(Icons.add_circle_outline),
         ],
       ),
     );
@@ -330,12 +337,73 @@ class DraggableTaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LongPressDraggable<DraggedPayloadModel>(
-      data: DraggedPayloadModel(task: task, from: column, fromIndex: index),
-      feedback: TaskCard(task: task, elevation: 12, width: 260),
-      childWhenDragging: Opacity(opacity: 0.35, child: TaskCard(task: task)),
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      child: TaskCard(task: task),
+    // Whole card is draggable (tap + move)
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        return Draggable<DraggedPayloadModel>(
+          data: DraggedPayloadModel(task: task, from: column, fromIndex: index),
+          feedback: ConstrainedBox(
+            constraints: BoxConstraints.tightFor(
+              width: width.clamp(220.0, 360.0),
+            ),
+            child: TaskCard(task: task, elevation: 12),
+          ),
+
+          childWhenDragging: Opacity(
+            opacity: 0.35,
+            child: TaskCard(task: task),
+          ),
+
+          dragAnchorStrategy: pointerDragAnchorStrategy,
+          child: Stack(
+            children: [
+              TaskCard(task: task),
+              Positioned(
+                right: 2,
+                top: 6,
+                child: _TaskActionsButton(task: task),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+enum TaskMenuAction { edit, delete, display }
+
+class _TaskActionsButton extends StatelessWidget {
+  final TaskModel task;
+  const _TaskActionsButton({required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<BoardBloc>();
+
+    return PopupMenuButton<TaskMenuAction>(
+      padding: EdgeInsets.zero,
+      tooltip: 'Task actions',
+      onSelected: (value) {
+        switch (value) {
+          case TaskMenuAction.edit:
+            bloc.add(BoardEditTask(task));
+            break;
+          case TaskMenuAction.delete:
+            bloc.add(BoardDeleteTask(task));
+            break;
+          case TaskMenuAction.display:
+            bloc.add(BoardDisplayTask(task));
+            break;
+        }
+      },
+      itemBuilder: (context) => const [
+        PopupMenuItem(value: TaskMenuAction.edit, child: Text('Edit')),
+        PopupMenuItem(value: TaskMenuAction.delete, child: Text('Delete')),
+        PopupMenuItem(value: TaskMenuAction.display, child: Text('Display')),
+      ],
+      icon: const Icon(Icons.more_vert, size: 20),
     );
   }
 }
@@ -343,49 +411,39 @@ class DraggableTaskCard extends StatelessWidget {
 class TaskCard extends StatelessWidget {
   final TaskModel task;
   final double elevation;
-  final double? width;
 
-  const TaskCard({
-    super.key,
-    required this.task,
-    this.elevation = 4,
-    this.width,
-  });
+  const TaskCard({super.key, required this.task, this.elevation = 4});
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: width ?? 0),
-      child: Material(
-        elevation: elevation,
-        borderRadius: BorderRadius.circular(10),
-        color: const Color(0xff333333),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                task.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                task.description,
-                maxLines: 6,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
+    return Material(
+      elevation: elevation,
+      borderRadius: BorderRadius.circular(10),
+      color: const Color(0xff333333),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          14,
+          14,
+          36,
+          14,
+        ), // extra right padding for the menu
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              task.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              task.description,
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            ),
+          ],
         ),
       ),
     );

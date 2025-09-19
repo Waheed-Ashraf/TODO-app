@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/dragable_payload_model.dart';
+import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/main_dashboard_view_body.dart';
 
 abstract class BoardEvent extends Equatable {
@@ -48,4 +49,26 @@ class BoardSetGapHover extends BoardEvent {
 
   @override
   List<Object?> get props => [column, index];
+}
+
+// board_event.dart
+class BoardEditTask extends BoardEvent {
+  final TaskModel task;
+  const BoardEditTask(this.task);
+  @override
+  List<Object?> get props => [task];
+}
+
+class BoardDeleteTask extends BoardEvent {
+  final TaskModel task;
+  const BoardDeleteTask(this.task);
+  @override
+  List<Object?> get props => [task];
+}
+
+class BoardDisplayTask extends BoardEvent {
+  final TaskModel task;
+  const BoardDisplayTask(this.task);
+  @override
+  List<Object?> get props => [task];
 }
