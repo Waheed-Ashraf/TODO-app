@@ -5,12 +5,10 @@ import 'dart:math' as math;
 
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:farmedia/core/errors/exceptions.dart';
-import 'package:farmedia/features/auth/domain/entites/user_entity.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:todo_app_task/core/errors/exceptions.dart';
 
 class FirebaseAuthService {
   Future deleteUser() async {

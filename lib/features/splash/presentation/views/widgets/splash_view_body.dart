@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:farmedia/constants.dart';
-import 'package:farmedia/core/services/firebase_auth_service.dart';
-import 'package:farmedia/core/utils/app_images.dart';
-import 'package:farmedia/features/auth/presentation/views/signin_view.dart';
-import 'package:farmedia/features/on_boarding/presentation/views/on_boarding_view.dart';
-import 'package:svg_flutter/svg.dart';
 
-import '../../../../../core/services/shared_preferences_singleton.dart';
-import '../../../../home/presentation/views/main_view.dart';
+import 'package:svg_flutter/svg.dart';
+import 'package:todo_app_task/core/utils/app_images.dart';
+import 'package:todo_app_task/features/main_dashboard/presentation/views/main_dashboard_view.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -40,19 +35,21 @@ class _SplashViewBodyState extends State<SplashViewBody> {
   }
 
   void excuteNaviagtion() {
-    bool isOnBoardingViewSeen = Prefs.getBool(kIsOnBoardingViewSeen);
+    //   bool isOnBoardingViewSeen = Prefs.getBool(kIsOnBoardingViewSeen);
     Future.delayed(const Duration(seconds: 3), () {
-      if (isOnBoardingViewSeen) {
-        var isLoggedIn = FirebaseAuthService().isLoggedIn();
+      // if (isOnBoardingViewSeen) {
+      //   var isLoggedIn = FirebaseAuthService().isLoggedIn();
 
-        if (isLoggedIn) {
-          Navigator.pushReplacementNamed(context, MainView.routeName);
-        } else {
-          Navigator.pushReplacementNamed(context, SigninView.routeName);
-        }
-      } else {
-        Navigator.pushReplacementNamed(context, OnBoardingView.routeName);
-      }
+      //   if (isLoggedIn) {
+      //     Navigator.pushReplacementNamed(context, MainView.routeName);
+      //   } else {
+      //     Navigator.pushReplacementNamed(context, SigninView.routeName);
+      //   }
+      // } else {
+      //   Navigator.pushReplacementNamed(context, OnBoardingView.routeName);
+      // }
+
+      Navigator.pushReplacementNamed(context, MainDashboardView.routeName);
     });
   }
 }
