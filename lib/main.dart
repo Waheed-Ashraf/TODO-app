@@ -11,23 +11,37 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Bloc.observer = CustomBlocObserver();
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Prefs.init();
-
   setupGetit();
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Light theme (optional if you want to support both)
       theme: ThemeData(
         fontFamily: 'Cairo',
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
       ),
+
+      // Dark theme
+      darkTheme: ThemeData(
+        fontFamily: 'Cairo',
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xff181818),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primaryColor,
+          brightness: Brightness.dark,
+        ),
+      ),
+
+      themeMode: ThemeMode.dark,
 
       onGenerateRoute: onGenerateRoute,
       initialRoute: SplashView.routeName,

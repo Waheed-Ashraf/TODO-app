@@ -6,6 +6,6 @@ class MainDashboardView extends StatelessWidget {
   static const String routeName = 'MainDashboardView';
   @override
   Widget build(BuildContext context) {
-    return const MainDashboardViewBody();
+    return const SafeArea(child: MainDashboardViewBody());
   }
 }
