@@ -1,24 +1,36 @@
 import 'package:get_it/get_it.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo_app_task/core/services/store_device_id.dart';
+import 'package:todo_app_task/features/main_dashboard/data/repo/dashboard_repo.dart';
+import 'package:todo_app_task/features/main_dashboard/data/repo_imp/dashboard_repo_imp.dart';
+import 'package:todo_app_task/features/main_dashboard/presentation/view_model/bloc/board_bloc.dart';
 
 final getIt = GetIt.instance;
 
-void setupGetit() {
-  // getIt.registerSingleton<FirebaseAuthService>(FirebaseAuthService());
-  // getIt.registerSingleton<DatabaseService>(FireStoreService());
-  // getIt.registerSingleton<AuthRepo>(
-  //   AuthRepoImpl(
-  //     firebaseAuthService: getIt<FirebaseAuthService>(),
-  //     databaseService: getIt<DatabaseService>(),
-  //   ),
-  // );
-  // getIt.registerSingleton<ProfileRepo>(
-  //   ProfileRepoImpl(firebaseAuthService: getIt<FirebaseAuthService>()),
-  // );
-  // getIt.registerSingleton<ProductsRepo>(
-  //   ProductsRepoImpl(getIt<DatabaseService>()),
-  // );
+Future<void> setupGetit() async {
+  // Firestore
+  getIt.registerLazySingleton<FirebaseFirestore>(
+    () => FirebaseFirestore.instance,
+  );
 
-  // getIt.registerFactory(() => DeleteAccountCubit(getIt<ProfileRepo>()));
-  // getIt.registerFactory(() => LogoutCubit(getIt<ProfileRepo>()));
-  // getIt.registerSingleton<OrdersRepo>(OrdersRepoImpl(getIt<DatabaseService>()));
+  // DeviceId (async singleton; use instanceName so we can await it)
+  getIt.registerSingletonAsync<String>(
+    () async => await DeviceIdService.getOrCreate(),
+    instanceName: 'deviceId',
+  );
+
+  // Repository (depends on deviceId)
+  getIt.registerSingletonAsync<DashboardRepository>(() async {
+    final deviceId = await getIt.getAsync<String>(instanceName: 'deviceId');
+    final db = getIt<FirebaseFirestore>();
+    return DashboardRepoImp(db, deviceId: deviceId);
+  });
+
+  // Bloc factory (depends on repo)
+  getIt.registerFactory<BoardBloc>(
+    () => BoardBloc(repo: getIt<DashboardRepository>()),
+  );
+
+  // Wait for async singletons (deviceId, repo)
+  await getIt.allReady();
 }

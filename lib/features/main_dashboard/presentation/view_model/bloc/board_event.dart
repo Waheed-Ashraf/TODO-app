@@ -72,3 +72,21 @@ class BoardDisplayTask extends BoardEvent {
   @override
   List<Object?> get props => [task];
 }
+
+class BoardLoadAllColumns extends BoardEvent {}
+
+class BoardAddTask extends BoardEvent {
+  final TaskModel task;
+  const BoardAddTask(this.task);
+}
+
+class BoardUpdateTask extends BoardEvent {
+  final TaskModel task;
+  const BoardUpdateTask(this.task);
+}
+
+class BoardDeleteTaskById extends BoardEvent {
+  final String taskId;
+  final BoardColumn column; // to update UI immediately
+  const BoardDeleteTaskById({required this.taskId, required this.column});
+}

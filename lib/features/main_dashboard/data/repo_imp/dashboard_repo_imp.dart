@@ -1,33 +1,49 @@
+// lib/features/main_dashboard/data/repo/dashboard_repo_imp.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
 import 'package:todo_app_task/features/main_dashboard/data/repo/dashboard_repo.dart';
+import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/main_dashboard_view_body.dart'
+    show BoardColumn;
 
 class DashboardRepoImp implements DashboardRepository {
+  final FirebaseFirestore _db;
+  final String deviceId;
+
+  DashboardRepoImp(this._db, {required this.deviceId});
+
+  CollectionReference<Map<String, dynamic>> get _tasksCol =>
+      _db.collection('users').doc(deviceId).collection('tasks');
+
   @override
-  Future<void> addTask() {
-    // TODO: implement addTask
-    throw UnimplementedError();
+  Future<String> addTask(TaskModel task) async {
+    final ref = await _tasksCol.add(task.toMap());
+    return ref.id;
   }
 
   @override
-  Future<void> deleteTask() {
-    // TODO: implement deleteTask
-    throw UnimplementedError();
+  Future<TaskModel?> getTask(String taskId) async {
+    final doc = await _tasksCol.doc(taskId).get();
+    if (!doc.exists) return null;
+    return TaskModel.fromDoc(doc);
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getAllTasksInColumn() {
-    // TODO: implement getAllTasksInColumn
-    throw UnimplementedError();
+  Future<void> updateTask(TaskModel task) async {
+    await _tasksCol.doc(task.id).update(task.toMap());
   }
 
   @override
-  Future<Map<String, dynamic>?> getTask() {
-    // TODO: implement getTask
-    throw UnimplementedError();
+  Future<void> deleteTask(String taskId) async {
+    await _tasksCol.doc(taskId).delete();
   }
 
   @override
-  Future<void> updateTask() {
-    // TODO: implement updateTask
-    throw UnimplementedError();
+  Future<List<TaskModel>> getAllTasksInColumn(BoardColumn column) async {
+    final q = await _tasksCol
+        .where('status', isEqualTo: TaskModel.statusToString(column))
+        .orderBy('dueDate', descending: false)
+        .get();
+
+    return q.docs.map((d) => TaskModel.fromDoc(d)).toList();
   }
 }

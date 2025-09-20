@@ -14,8 +14,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Bloc.observer = CustomBlocObserver();
   await Prefs.init();
-  setupGetit();
-
+  await setupGetit();
   runApp(const MyApp());
 }
 

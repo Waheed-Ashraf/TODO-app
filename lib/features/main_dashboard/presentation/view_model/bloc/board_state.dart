@@ -45,28 +45,12 @@ class BoardState extends Equatable {
   ];
 
   factory BoardState.initial() {
-    return BoardState(
+    return const BoardState(
       lanes: {
-        BoardColumn.backlog: [
-          TaskModel(
-            id: 't1',
-            title: 'Design new logo',
-            description: 'Create a modern logo for the new product line.',
-          ),
-          TaskModel(
-            id: 't2',
-            title: 'Draft brief',
-            description: 'Collect requirements from marketing & sales.',
-          ),
-          TaskModel(
-            id: 't3',
-            title: 'Competitor scan',
-            description: 'Research top 5 products in the segment.',
-          ),
-        ],
-        BoardColumn.todo: const [],
-        BoardColumn.inProgress: const [],
-        BoardColumn.done: const [],
+        BoardColumn.backlog: [],
+        BoardColumn.todo: [],
+        BoardColumn.inProgress: [],
+        BoardColumn.done: [],
       },
     );
   }
