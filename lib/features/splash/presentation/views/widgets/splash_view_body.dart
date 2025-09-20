@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:svg_flutter/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:todo_app_task/core/utils/app_images.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/views/main_dashboard_view.dart';
 
@@ -11,45 +10,47 @@ class SplashViewBody extends StatefulWidget {
   State<SplashViewBody> createState() => _SplashViewBodyState();
 }
 
-class _SplashViewBodyState extends State<SplashViewBody> {
+class _SplashViewBodyState extends State<SplashViewBody>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
   @override
   void initState() {
-    excuteNaviagtion();
     super.initState();
+
+    _controller = AnimationController(vsync: this);
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _goNext();
+      }
+    });
+  }
+
+  void _goNext() {
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, MainDashboardView.routeName);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [SvgPicture.asset(Assets.imagesPlant)],
-        ),
-        SvgPicture.asset(Assets.imagesLogo),
-        SvgPicture.asset(Assets.imagesSplashBottom, fit: BoxFit.fill),
-      ],
+    return Center(
+      child: Lottie.asset(
+        Assets.imagesSplashAnimation,
+        controller: _controller,
+        fit: BoxFit.contain,
+        onLoaded: (composition) {
+          _controller
+            ..duration = composition.duration
+            ..forward();
+        },
+      ),
     );
-  }
-
-  void excuteNaviagtion() {
-    //   bool isOnBoardingViewSeen = Prefs.getBool(kIsOnBoardingViewSeen);
-    Future.delayed(const Duration(seconds: 3), () {
-      // if (isOnBoardingViewSeen) {
-      //   var isLoggedIn = FirebaseAuthService().isLoggedIn();
-
-      //   if (isLoggedIn) {
-      //     Navigator.pushReplacementNamed(context, MainView.routeName);
-      //   } else {
-      //     Navigator.pushReplacementNamed(context, SigninView.routeName);
-      //   }
-      // } else {
-      //   Navigator.pushReplacementNamed(context, OnBoardingView.routeName);
-      // }
-
-      Navigator.pushReplacementNamed(context, MainDashboardView.routeName);
-    });
   }
 }

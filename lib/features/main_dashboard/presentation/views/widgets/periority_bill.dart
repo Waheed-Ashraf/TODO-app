@@ -1,5 +1,5 @@
-// Priority pill
 import 'package:flutter/material.dart';
+import 'package:todo_app_task/core/utils/app_colors.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/periority_enum.dart';
 
 class PriorityPill extends StatelessWidget {
@@ -8,17 +8,17 @@ class PriorityPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = priorityBg(priority);
-    final fg = priorityFg(priority);
-    final label = priorityLabel(priority);
-    final icon = priorityIcon(priority);
+    final bg = _bg(priority);
+    final fg = _fg(priority);
+    final label = _label(priority);
+    final icon = _icon(priority);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: fg.withValues(alpha: .25), width: 1),
+        border: Border.all(color: fg.withOpacity(.25), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -27,45 +27,44 @@ class PriorityPill extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
-              color: fg,
               letterSpacing: .2,
-            ),
+            ).copyWith(color: fg),
           ),
         ],
       ),
     );
   }
 
-  static Color priorityBg(Priority p) {
+  Color _bg(Priority p) {
     switch (p) {
       case Priority.low:
-        return const Color(0xff2e4d2f);
+        return AppColors.prioLowBg;
       case Priority.medium:
-        return const Color(0xff3b3f57);
+        return AppColors.prioMedBg;
       case Priority.high:
-        return const Color(0xff5a3a3a);
+        return AppColors.prioHighBg;
       case Priority.urgent:
-        return const Color(0xff5a2222);
+        return AppColors.prioUrgentBg;
     }
   }
 
-  static Color priorityFg(Priority p) {
+  Color _fg(Priority p) {
     switch (p) {
       case Priority.low:
-        return const Color(0xff7EE787);
+        return AppColors.prioLowFg;
       case Priority.medium:
-        return const Color(0xff9DB2FF);
+        return AppColors.prioMedFg;
       case Priority.high:
-        return const Color(0xffFFB86B);
+        return AppColors.prioHighFg;
       case Priority.urgent:
-        return const Color(0xffFF6B6B);
+        return AppColors.prioUrgentFg;
     }
   }
 
-  static String priorityLabel(Priority p) {
+  String _label(Priority p) {
     switch (p) {
       case Priority.low:
         return 'LOW';
@@ -78,7 +77,7 @@ class PriorityPill extends StatelessWidget {
     }
   }
 
-  static IconData priorityIcon(Priority p) {
+  IconData _icon(Priority p) {
     switch (p) {
       case Priority.low:
         return Icons.arrow_downward_rounded;

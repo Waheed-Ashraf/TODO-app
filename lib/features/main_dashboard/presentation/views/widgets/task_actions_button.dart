@@ -1,6 +1,7 @@
-// task_actions_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app_task/core/utils/app_colors.dart';
+import 'package:todo_app_task/core/utils/app_text_styles.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/task_menu_action.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_bloc.dart';
@@ -16,8 +17,9 @@ class TaskActionsButton extends StatelessWidget {
     final bloc = context.read<BoardBloc>();
 
     return PopupMenuButton<TaskMenuAction>(
-      padding: EdgeInsets.zero,
       tooltip: 'Task actions',
+      color: Theme.of(context).cardColor, // styled to match cards
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onSelected: (value) async {
         switch (value) {
           case TaskMenuAction.display:
@@ -47,12 +49,30 @@ class TaskActionsButton extends StatelessWidget {
             break;
         }
       },
-      itemBuilder: (context) => const [
-        PopupMenuItem(value: TaskMenuAction.display, child: Text('Display')),
-        PopupMenuItem(value: TaskMenuAction.edit, child: Text('Edit')),
-        PopupMenuItem(value: TaskMenuAction.delete, child: Text('Delete')),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: TaskMenuAction.display,
+          child: Text(
+            'Display',
+            style: TextStyles.body.copyWith(color: AppColors.text),
+          ),
+        ),
+        PopupMenuItem(
+          value: TaskMenuAction.edit,
+          child: Text(
+            'Edit',
+            style: TextStyles.body.copyWith(color: AppColors.text),
+          ),
+        ),
+        PopupMenuItem(
+          value: TaskMenuAction.delete,
+          child: Text(
+            'Delete',
+            style: TextStyles.body.copyWith(color: AppColors.text),
+          ),
+        ),
       ],
-      icon: const Icon(Icons.more_vert, size: 20),
+      icon: const Icon(Icons.more_vert, size: 20, color: AppColors.text),
     );
   }
 }

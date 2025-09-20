@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app_task/core/utils/app_colors.dart';
+import 'package:todo_app_task/core/utils/app_text_styles.dart';
+
 import 'package:todo_app_task/features/main_dashboard/data/enums/board_column_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_bloc.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_event.dart';
@@ -19,14 +22,17 @@ class MainDashboardViewBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 8),
-              const Text(
-                "Kanban Board",
-                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
+              // Title
+              Text(
+                'Kanban Board',
+                style: TextStyles.titleLg.copyWith(color: AppColors.text),
               ),
               const SizedBox(height: 6),
-              const Text(
-                "Streamline your workflow with the Kanban Board tool",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              // Subtitle
+              Text(
+                'Streamline your workflow with the Kanban Board tool',
+                style: TextStyles.bodyMuted(.9),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
 
@@ -40,10 +46,11 @@ class MainDashboardViewBody extends StatelessWidget {
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Backlog
                         Expanded(
                           child: Lane(
-                            title: "Backlog",
-                            color: const Color(0xff9895e0),
+                            title: 'Backlog',
+                            color: AppColors.secondaryLight, // themed color
                             column: BoardColumn.backlog,
                             tasks: state.lanes[BoardColumn.backlog]!,
                             onAcceptTask: (payload, target, {insertIndex}) =>
@@ -71,10 +78,12 @@ class MainDashboardViewBody extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
+
+                        // TODO
                         Expanded(
                           child: Lane(
-                            title: "TODO",
-                            color: const Color(0xfff84a4a),
+                            title: 'To Do',
+                            color: AppColors.danger,
                             column: BoardColumn.todo,
                             tasks: state.lanes[BoardColumn.todo]!,
                             onAcceptTask: (payload, target, {insertIndex}) =>
@@ -101,10 +110,12 @@ class MainDashboardViewBody extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
+
+                        // In Progress
                         Expanded(
                           child: Lane(
-                            title: "In Progress",
-                            color: const Color(0xff4a94f8),
+                            title: 'In Progress',
+                            color: AppColors.info,
                             column: BoardColumn.inProgress,
                             tasks: state.lanes[BoardColumn.inProgress]!,
                             onAcceptTask: (payload, target, {insertIndex}) =>
@@ -132,10 +143,12 @@ class MainDashboardViewBody extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
+
+                        // Done
                         Expanded(
                           child: Lane(
-                            title: "Done",
-                            color: const Color(0xff56c991),
+                            title: 'Done',
+                            color: AppColors.success,
                             column: BoardColumn.done,
                             tasks: state.lanes[BoardColumn.done]!,
                             onAcceptTask: (payload, target, {insertIndex}) =>

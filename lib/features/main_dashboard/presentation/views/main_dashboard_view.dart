@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_task/core/services/get_it_service.dart';
+import 'package:todo_app_task/core/utils/app_colors.dart';
 import 'package:todo_app_task/core/utils/app_text_styles.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_bloc.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_event.dart';
@@ -19,12 +20,13 @@ class MainDashboardView extends StatelessWidget {
         BlocProvider(
           create: (_) => getIt<BoardBloc>()..add(BoardLoadAllColumns()),
         ),
-        BlocProvider(
-          create: (_) => getIt<ConnectivityBloc>(),
-        ), // already started in getIt
+        BlocProvider(create: (_) => getIt<ConnectivityBloc>()),
       ],
       child: BlocBuilder<ConnectivityBloc, ConnectivityState>(
         builder: (context, state) {
+          final width = MediaQuery.sizeOf(context).width;
+          final isTabletWidth = width >= 800;
+
           return Scaffold(
             body: SafeArea(
               child: Column(
@@ -32,14 +34,14 @@ class MainDashboardView extends StatelessWidget {
                   if (!state.online)
                     Container(
                       width: double.infinity,
-                      color: Colors.amber.shade800,
+                      color: AppColors.secondary.withOpacity(.22),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
                       ),
                       child: const Row(
                         children: [
-                          Icon(Icons.wifi_off, size: 18, color: Colors.white),
+                          Icon(Icons.wifi_off, size: 18, color: AppColors.text),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -50,6 +52,33 @@ class MainDashboardView extends StatelessWidget {
                         ],
                       ),
                     ),
+
+                  if (!isTabletWidth)
+                    Container(
+                      width: double.infinity,
+                      color: AppColors.info.withOpacity(.18),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.tablet_mac,
+                            size: 18,
+                            color: AppColors.text,
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'For the best Kanban experience, please use a tablet or larger screen.',
+                              style: TextStyles.titleMd,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                   const Expanded(child: MainDashboardViewBody()),
                 ],
               ),

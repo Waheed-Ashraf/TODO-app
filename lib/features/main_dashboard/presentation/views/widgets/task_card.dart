@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app_task/core/utils/app_colors.dart';
+import 'package:todo_app_task/core/utils/app_text_styles.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/due_countdown.dart';
 import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/periority_bill.dart';
@@ -19,6 +21,8 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final isOverdue =
         task.dueDate != null &&
         DateTime(
@@ -34,29 +38,26 @@ class TaskCard extends StatelessWidget {
     return Material(
       elevation: elevation,
       borderRadius: BorderRadius.circular(12),
-      color: const Color(0xff333333),
+      color: theme.cardColor,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Row: Priority pill + actions
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Title
                 Expanded(
                   child: Text(
                     task.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                    style: TextStyles.titleSm.copyWith(
+                      color: AppColors.text,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
-
                 if (showActions) TaskActionsButton(task: task),
               ],
             ),
@@ -68,17 +69,17 @@ class TaskCard extends StatelessWidget {
                 task.description,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: TextStyles.body.copyWith(color: AppColors.textMuted(.9)),
               ),
             ],
+
             const SizedBox(height: 8),
+            // Priority pill (right-aligned)
             Align(
               alignment: Alignment.centerRight,
               child: PriorityPill(priority: task.priority),
             ),
+
             // Tags
             if (task.tags.isNotEmpty) ...[
               const SizedBox(height: 10),
@@ -93,25 +94,23 @@ class TaskCard extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // Footer: Due date
+            // Footer: Due date + countdown
             Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Icon(
                   Icons.event,
                   size: 16,
-                  color: isOverdue
-                      ? const Color(0xfff84a4a)
-                      : Colors.white.withValues(alpha: 0.8),
+                  color: isOverdue ? AppColors.danger : AppColors.textMuted(.8),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   dueText,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                  style: TextStyles.meta.copyWith(
                     color: isOverdue
-                        ? const Color(0xfff84a4a)
-                        : Colors.white.withValues(alpha: 0.85),
+                        ? AppColors.danger
+                        : AppColors.textMuted(.9),
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 if (task.dueDate != null) ...[

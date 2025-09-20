@@ -60,25 +60,32 @@ class Lane extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           padding: const EdgeInsets.all(6),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SectionHeader(
-                  title: title,
-                  backgroundColor: color,
-                  onAdd: () => showAddTaskBottomSheet(context, column),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SectionHeader(
+                title: title,
+                backgroundColor: color,
+                onAdd: () => showAddTaskBottomSheet(context, column),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ..._buildCardsWithDropGaps(context),
+                      GapTarget(
+                        column: column,
+                        index: tasks.length,
+                        onAcceptTask: onAcceptTask,
+                        color: color,
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8),
-                ..._buildCardsWithDropGaps(context),
-                GapTarget(
-                  column: column,
-                  index: tasks.length,
-                  onAcceptTask: onAcceptTask,
-                  color: color,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

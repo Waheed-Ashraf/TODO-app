@@ -14,7 +14,11 @@ abstract class TextStyles {
     fontWeight: FontWeight.w700,
     color: AppColors.text,
   );
-
+  static const titleSm = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.text,
+  );
   // Body
   static const body = TextStyle(
     fontSize: 14,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:todo_app_task/core/utils/app_colors.dart';
+import 'package:todo_app_task/core/utils/app_text_styles.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/board_column_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/periority_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
@@ -11,10 +14,6 @@ Future<void> showAddTaskBottomSheet(BuildContext context, BoardColumn column) {
     context: context,
     useSafeArea: true,
     isScrollControlled: true,
-    backgroundColor: const Color(0xff222222),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
     builder: (_) => Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -27,7 +26,11 @@ Future<void> showAddTaskBottomSheet(BuildContext context, BoardColumn column) {
 class AddTaskForm extends StatefulWidget {
   final BuildContext contex;
   final BoardColumn initialColumn;
-  const AddTaskForm({required this.initialColumn, required this.contex});
+  const AddTaskForm({
+    super.key,
+    required this.initialColumn,
+    required this.contex,
+  });
 
   @override
   State<AddTaskForm> createState() => _AddTaskFormState();
@@ -51,6 +54,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   @override
   Widget build(BuildContext context) {
+    final muted = AppColors.textMuted(.9);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       child: Form(
@@ -59,50 +64,43 @@ class _AddTaskFormState extends State<AddTaskForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Header
             Row(
               children: [
-                const Text(
-                  'Add Task',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                ),
+                const Text('Add Task', style: TextStyles.titleMd),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.close),
+                  color: AppColors.text,
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
             const SizedBox(height: 8),
 
+            // Title
             TextFormField(
               controller: _title,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Title *'),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Title is required' : null,
             ),
             const SizedBox(height: 12),
 
+            // Description
             TextFormField(
               controller: _description,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 12),
 
+            // Priority + Due date
             Row(
               children: [
                 Expanded(
                   child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Priority',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: const InputDecoration(labelText: 'Priority'),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<Priority>(
                         value: _priority,
@@ -141,22 +139,16 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         firstDate: DateTime(now.year - 1),
                         lastDate: DateTime(now.year + 5),
                         initialDate: _due ?? now,
-                        builder: (ctx, child) {
-                          // keep dark look
-                          return Theme(data: Theme.of(ctx), child: child!);
-                        },
+                        builder: (ctx, child) =>
+                            Theme(data: Theme.of(ctx), child: child!),
                       );
                       if (picked != null) setState(() => _due = picked);
                     },
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Due date',
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: const InputDecoration(labelText: 'Due date'),
                       child: Text(
-                        _due == null
-                            ? 'Not set'
-                            : '${_due!.year}-${_due!.month.toString().padLeft(2, '0')}-${_due!.day.toString().padLeft(2, '0')}',
+                        _due == null ? 'Not set' : _formatDate(_due!),
+                        style: TextStyles.body.copyWith(color: muted),
                       ),
                     ),
                   ),
@@ -165,15 +157,16 @@ class _AddTaskFormState extends State<AddTaskForm> {
             ),
             const SizedBox(height: 12),
 
+            // Tags
             TextFormField(
               controller: _tags,
               decoration: const InputDecoration(
                 labelText: 'Tags (comma separated)',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 18),
 
+            // Submit
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -181,13 +174,13 @@ class _AddTaskFormState extends State<AddTaskForm> {
                 label: const Text('Create Task'),
                 onPressed: () {
                   if (!_formKey.currentState!.validate()) return;
+
                   final tags = _tags.text
                       .split(',')
                       .map((e) => e.trim())
                       .where((e) => e.isNotEmpty)
                       .toList();
 
-                  // NOTE: id will be generated by repo, so pass empty here
                   final task = TaskModel(
                     id: '',
                     title: _title.text.trim(),
@@ -207,5 +200,11 @@ class _AddTaskFormState extends State<AddTaskForm> {
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime d) {
+    final mm = d.month.toString().padLeft(2, '0');
+    final dd = d.day.toString().padLeft(2, '0');
+    return '${d.year}-$mm-$dd';
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SectionHeader extends StatelessWidget {
   final String title;
   final Color backgroundColor;
-  final VoidCallback onAdd; // ⬅️ new
+  final VoidCallback onAdd;
 
   const SectionHeader({
     super.key,
