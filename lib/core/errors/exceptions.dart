@@ -1,10 +1,7 @@
-class CustomException implements Exception {
+// lib/core/errors/app_exceptions.dart
+class AppException implements Exception {
   final String message;
-
-  CustomException({required this.message});
-
+  AppException(this.message);
   @override
-  String toString() {
-    return message;
-  }
+  String toString() => message;
 }

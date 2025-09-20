@@ -1,4 +1,3 @@
-// lib/core/services/device_id_service.dart
 import 'package:uuid/uuid.dart';
 import 'package:todo_app_task/core/services/shared_preferences_singleton.dart';
 

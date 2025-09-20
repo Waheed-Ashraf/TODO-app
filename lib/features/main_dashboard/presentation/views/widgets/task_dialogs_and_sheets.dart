@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app_task/core/utils/app_colors.dart';
+import 'package:todo_app_task/core/utils/app_text_styles.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/board_column_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/periority_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
@@ -7,13 +9,10 @@ import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets
 import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/tag_chip.dart';
 
 Future<void> showTaskDetailsDialog(BuildContext context, TaskModel task) {
-  final theme = Theme.of(context);
-  final textMuted = Colors.white.withValues(alpha: .75);
-
   return showDialog(
     context: context,
     builder: (_) => Dialog(
-      backgroundColor: const Color(0xff2a2a2a),
+      backgroundColor: AppColors.surfaceAlt,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
@@ -24,21 +23,27 @@ Future<void> showTaskDetailsDialog(BuildContext context, TaskModel task) {
             children: [
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      task.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  Expanded(child: Text(task.title, style: TextStyles.titleMd)),
                   IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
+
+              if (task.description.trim().isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(task.description, style: TextStyles.bodyMuted(.9)),
+              ],
+
+              if (task.tags.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: task.tags.map((t) => TagChip(text: t)).toList(),
+                ),
+              ],
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -50,53 +55,29 @@ Future<void> showTaskDetailsDialog(BuildContext context, TaskModel task) {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xff333333),
+                      color: AppColors.card,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       'Status: ${TaskModel.statusToString(task.status).toUpperCase()}',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: textMuted,
-                        fontWeight: FontWeight.w700,
+                      style: TextStyles.chip.copyWith(
+                        color: AppColors.textMuted(.85),
                       ),
                     ),
                   ),
                 ],
               ),
-              if (task.description.trim().isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  task.description,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: .9),
-                  ),
-                ),
-              ],
-              if (task.tags.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: task.tags.map((t) => TagChip(text: t)).toList(),
-                ),
-              ],
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(
-                    Icons.event,
-                    size: 18,
-                    color: Colors.white.withValues(alpha: .8),
-                  ),
+                  Icon(Icons.event, size: 18, color: AppColors.textMuted(.8)),
                   const SizedBox(width: 6),
                   Text(
                     task.dueDate == null
                         ? 'No due date'
                         : formatDate(task.dueDate!),
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: .9),
-                      fontWeight: FontWeight.w600,
+                    style: TextStyles.meta.copyWith(
+                      color: AppColors.textMuted(.9),
                     ),
                   ),
                   if (task.dueDate != null) ...[
@@ -105,7 +86,6 @@ Future<void> showTaskDetailsDialog(BuildContext context, TaskModel task) {
                   ],
                 ],
               ),
-              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -115,15 +95,16 @@ Future<void> showTaskDetailsDialog(BuildContext context, TaskModel task) {
 }
 
 // ---------- EDIT ----------
+
 Future<TaskModel?> showEditTaskBottomSheet(
   BuildContext context,
   TaskModel task,
-) async {
+) {
   return showModalBottomSheet<TaskModel>(
     context: context,
     useSafeArea: true,
     isScrollControlled: true,
-    backgroundColor: const Color(0xff222222),
+    backgroundColor: AppColors.surface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
@@ -184,10 +165,7 @@ class _EditTaskFormState extends State<_EditTaskForm> {
           children: [
             Row(
               children: [
-                const Text(
-                  'Edit Task',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                ),
+                const Text('Edit Task', style: TextStyles.titleMd),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.close),
@@ -199,10 +177,7 @@ class _EditTaskFormState extends State<_EditTaskForm> {
 
             TextFormField(
               controller: _title,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Title *'),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Title is required' : null,
             ),
@@ -211,10 +186,7 @@ class _EditTaskFormState extends State<_EditTaskForm> {
             TextFormField(
               controller: _description,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 12),
 
@@ -222,10 +194,7 @@ class _EditTaskFormState extends State<_EditTaskForm> {
               children: [
                 Expanded(
                   child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Priority',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: const InputDecoration(labelText: 'Priority'),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<Priority>(
                         value: _priority,
@@ -257,10 +226,7 @@ class _EditTaskFormState extends State<_EditTaskForm> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Status',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: const InputDecoration(labelText: 'Status'),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<BoardColumn>(
                         value: _status,
@@ -310,11 +276,11 @@ class _EditTaskFormState extends State<_EditTaskForm> {
                       if (picked != null) setState(() => _due = picked);
                     },
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Due date',
-                        border: OutlineInputBorder(),
+                      decoration: const InputDecoration(labelText: 'Due date'),
+                      child: Text(
+                        _due == null ? 'Not set' : formatDate(_due!),
+                        style: TextStyles.meta,
                       ),
-                      child: Text(_due == null ? 'Not set' : formatDate(_due!)),
                     ),
                   ),
                 ),
@@ -324,7 +290,6 @@ class _EditTaskFormState extends State<_EditTaskForm> {
                     controller: _tags,
                     decoration: const InputDecoration(
                       labelText: 'Tags (comma separated)',
-                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -339,13 +304,11 @@ class _EditTaskFormState extends State<_EditTaskForm> {
                 label: const Text('Save changes'),
                 onPressed: () {
                   if (!_formKey.currentState!.validate()) return;
-
                   final tags = _tags.text
                       .split(',')
                       .map((e) => e.trim())
                       .where((e) => e.isNotEmpty)
                       .toList();
-
                   final updated = widget.task.copyWith(
                     title: _title.text.trim(),
                     description: _description.text.trim(),
@@ -354,8 +317,7 @@ class _EditTaskFormState extends State<_EditTaskForm> {
                     dueDate: _due,
                     tags: tags,
                   );
-
-                  Navigator.pop(context, updated); // return updated task
+                  Navigator.pop(context, updated);
                 },
               ),
             ),
@@ -365,18 +327,19 @@ class _EditTaskFormState extends State<_EditTaskForm> {
     );
   }
 }
-
 // ---------- DELETE ----------
+
 Future<bool?> confirmDeleteTask(BuildContext context, TaskModel task) {
   return showDialog<bool>(
     context: context,
     builder: (_) => AlertDialog(
-      backgroundColor: const Color(0xff2a2a2a),
-      title: const Text('Delete task', style: TextStyle(color: Colors.white)),
+      backgroundColor: AppColors.surfaceAlt,
+      title: const Text('Delete task', style: TextStyles.titleMd),
       content: Text(
         'Are you sure you want to delete “${task.title}”? This action cannot be undone.',
-        style: TextStyle(color: Colors.white.withValues(alpha: .9)),
+        style: TextStyles.bodyMuted(.9),
       ),
+      actionsPadding: const EdgeInsets.only(right: 12, bottom: 8),
       actions: [
         TextButton(
           child: const Text('Cancel'),
@@ -384,9 +347,6 @@ Future<bool?> confirmDeleteTask(BuildContext context, TaskModel task) {
         ),
         FilledButton(
           onPressed: () => Navigator.pop(context, true),
-          style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xfff84a4a),
-          ),
           child: const Text('Delete'),
         ),
       ],

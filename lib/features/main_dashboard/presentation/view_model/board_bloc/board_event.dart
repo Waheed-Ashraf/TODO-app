@@ -90,3 +90,5 @@ class BoardDeleteTaskById extends BoardEvent {
   final BoardColumn column; // to update UI immediately
   const BoardDeleteTaskById({required this.taskId, required this.column});
 }
+
+class BoardClearError extends BoardEvent {}

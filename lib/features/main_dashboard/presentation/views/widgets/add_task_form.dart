@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/board_column_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/enums/periority_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
-import 'package:todo_app_task/features/main_dashboard/presentation/view_model/bloc/board_bloc.dart';
-import 'package:todo_app_task/features/main_dashboard/presentation/view_model/bloc/board_event.dart';
+import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_bloc.dart';
+import 'package:todo_app_task/features/main_dashboard/presentation/view_model/board_bloc/board_event.dart';
 
 Future<void> showAddTaskBottomSheet(BuildContext context, BoardColumn column) {
   return showModalBottomSheet(
