@@ -1,9 +1,8 @@
 // lib/features/main_dashboard/data/repo/dashboard_repo_imp.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo_app_task/features/main_dashboard/data/enums/board_column_enum.dart';
 import 'package:todo_app_task/features/main_dashboard/data/models/task_model.dart';
 import 'package:todo_app_task/features/main_dashboard/data/repo/dashboard_repo.dart';
-import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/main_dashboard_view_body.dart'
-    show BoardColumn;
 
 class DashboardRepoImp implements DashboardRepository {
   final FirebaseFirestore _db;
@@ -24,7 +23,7 @@ class DashboardRepoImp implements DashboardRepository {
   Future<TaskModel?> getTask(String taskId) async {
     final doc = await _tasksCol.doc(taskId).get();
     if (!doc.exists) return null;
-    return TaskModel.fromDoc(doc);
+    return TaskModel.fromDoc(doc as DocumentSnapshot<Map<String, dynamic>>);
   }
 
   @override

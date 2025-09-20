@@ -1,10 +1,8 @@
 // lib/features/main_dashboard/data/models/task_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:todo_app_task/features/main_dashboard/presentation/views/widgets/main_dashboard_view_body.dart'
-    show BoardColumn;
-
-enum Priority { low, medium, high, urgent }
+import 'package:todo_app_task/features/main_dashboard/data/enums/board_column_enum.dart';
+import 'package:todo_app_task/features/main_dashboard/data/enums/periority_enum.dart';
 
 class TaskModel extends Equatable {
   final String id;
