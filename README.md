@@ -1,8 +1,8 @@
 # Kanban Board — Mini-ERP (Flutter)
 
-[**⬇️ APK**](https://YOUR-APK-LINK) • [**▶️ Demo**](https://YOUR-VIDEO-LINK)
+[**⬇️ APK**]([https://YOUR-APK-LINK](https://drive.google.com/file/d/19TPg8r_glrJHF2_97axrk6g9CPawuvY6/view?usp=sharing)) • [**▶️ Demo**]([https://YOUR-VIDEO-LINK](https://drive.google.com/file/d/1-iMjAUNgncVNvccYomxVAr8T7jsnPXbJ/view?usp=sharing))
 
-A clean **Flutter + BLoC** Kanban app with drag & drop, task CRUD, connectivity awareness, and **Firebase Firestore** (device-scoped). Local cache & sync are outlined in Roadmap.
+A clean **Flutter + BLoC** Kanban app with drag & drop, task CRUD, connectivity awareness, and **Firebase Firestore** (device-scoped).
 
 ---
 
