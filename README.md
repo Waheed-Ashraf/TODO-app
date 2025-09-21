@@ -1,4 +1,4 @@
-# Kanban Board — Mini-ERP (Flutter)
+# Kanban Board [For tablet] — Mini-ERP (Flutter)
 
 [**⬇️ APK**](https://drive.google.com/file/d/19TPg8r_glrJHF2_97axrk6g9CPawuvY6/view?usp=sharing) •
 [**▶️ Demo**](https://drive.google.com/file/d/1-iMjAUNgncVNvccYomxVAr8T7jsnPXbJ/view?usp=sharing)
@@ -14,7 +14,7 @@ A clean **Flutter + BLoC** Kanban app with drag & drop, task CRUD, connectivity 
 - **Details dialog** + **delete confirmation**
 - **Connectivity banner** (offline notice)
 - **Dark theme** with centralized colors & text styles
-- **Lottie** splash (2s)
+- **Lottie** splash 
 - Tablet notice on small screens
 
 ---
@@ -28,7 +28,7 @@ A clean **Flutter + BLoC** Kanban app with drag & drop, task CRUD, connectivity 
 ---
 
 ## Project Structure
-
+```plaintext
 lib/
 ├─ core/
 │ ├─ errors/ # Failures, exceptions
@@ -61,3 +61,13 @@ lib/
 │
 ├─ firebase_options.dart # FlutterFire config
 └─ main.dart # App entry: routes, theme, DI bootstrap
+```
+
+
+## Contact
+
+For any questions or suggestions, feel free to contact me:
+
+Email: washraf124@gmail.com
+
+LinkedIn: [Waheed Ashraf](https://www.linkedin.com/in/waheed-ashraf-18a197214/)
